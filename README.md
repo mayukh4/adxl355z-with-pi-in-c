@@ -31,18 +31,37 @@ This project implements a high-speed data acquisition system for three ADXL355 a
 
 ### Pin Connections
 
-| ADXL355 Pin | Raspberry Pi Pin | Accelerometer 1 | Accelerometer 2 | Accelerometer 3 |
-|-------------|------------------|-----------------|-----------------|-----------------|
-| VDD         | 3.3V             | Pin 1           | Pin 17          | Pin 1           |
-| GND         | GND              | Pin 6           | Pin 9           | Pin 6           |
-| SCLK        | GPIO 11 (SCLK)   | Pin 23          | Pin 23          | Pin 23          |
-| MISO        | GPIO 9 (MISO)    | Pin 21          | Pin 21          | Pin 21          |
-| MOSI        | GPIO 10 (MOSI)   | Pin 19          | Pin 19          | Pin 19          |
-| CS          | GPIO 8 (CE0)     | Pin 24          | -               | -               |
-| CS          | GPIO 7 (CE1)     | -               | Pin 26          | -               |
-| CS          | GPIO 18          | -               | -               | Pin 12          |
+# ADXL355 Data Acquisition System
 
-Note: Accelerometer 3 uses GPIO 18 as its chip select, which requires additional configuration in the SPI setup.
+[Previous content remains the same]
+
+## Hardware Setup
+
+### Pin Connections
+
+| ADXL355 Pin | Raspberry Pi Pin | Accelerometer 1 (SPI0) | Accelerometer 2 (SPI0) | Accelerometer 3 (SPI1) |
+|-------------|------------------|------------------------|------------------------|------------------------|
+| MOSI        | PIN 19 (SPI0 MOSI) | Connected              | Connected              | -                      |
+| MISO        | PIN 21 (SPI0 MISO) | Connected              | Connected              | -                      |
+| SCLK        | PIN 23 (SPI0 SCLK) | Connected              | Connected              | -                      |
+| CS          | PIN 24 (SPI0 CE0)  | Connected              | -                      | -                      |
+| CS          | PIN 26 (SPI0 CE1)  | -                      | Connected              | -                      |
+| MOSI        | PIN 38 (SPI1 MOSI) | -                      | -                      | Connected              |
+| MISO        | PIN 25 (SPI1 MISO) | -                      | -                      | Connected              |
+| SCLK        | PIN 40 (SPI1 SCLK) | -                      | -                      | Connected              |
+| CS          | PIN 12 (SPI1 CE0)  | -                      | -                      | Connected              |
+| VDD         | 3.3V               | Connected              | Connected              | Connected              |
+| GND         | GND                | Connected              | Connected              | Connected              |
+
+Note: Ensure that you connect the VDD (power) and GND (ground) pins of each accelerometer to the appropriate 3.3V and GND pins on the Raspberry Pi, respectively.
+
+### NOTE: 
+
+Raspberry pi 4 and above models have two SPI busses that can be used simultaneously. In this case since we are reading out three SPI sensors, we need to access the 2nd SPI bus on the pi called SPI1. To activate that add this line to "/boot/config.txt":
+
+   ```bash
+   dtoverlay=spi1-3cs
+   ```
 
 ## Software Dependencies
 
